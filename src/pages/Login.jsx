@@ -203,7 +203,7 @@ const Login = () => {
               }
             }}>
             <img 
-              src="/public/MF_logo.png" 
+              src="https://res.cloudinary.com/dz9naf3si/image/upload/v1745705554/MF_logo_fyafkr.png" 
               alt="MF Logo" 
               style={{
                 height: '120px',
