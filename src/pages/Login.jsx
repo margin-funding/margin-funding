@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:800';
+  const API_URL = 'https://margin-funding-backend-v3.vercel.app';
 
   const handleSubmit = async (event) => {
     event.preventDefault();
