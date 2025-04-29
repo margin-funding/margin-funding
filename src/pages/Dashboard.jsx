@@ -11,7 +11,6 @@ const Dashboard = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
   const [accountDetail, setAccountDetail] = useState(user?.accountdata?.[0]);
-
   const latestAccountHis =
     accountDetail?.accountHistory?.[accountDetail?.accountHistory?.length - 1];
 
@@ -31,8 +30,11 @@ const Dashboard = () => {
   const totalDailyLoss =
     ((latestAccountHis?.MaxDailyDrawdown || 0) * (latestAccountHis?.Equity || 0)) / 100;
 
-  const permittedLoss =
-    ((latestAccountHis?.MaxDailyDrawdown || 0) * (accountDetail?.startingEquity || 0)) / 100;
+  // UPDATED: Use balance for high watermark and calculate 4% for permitted loss
+  const currentBalance = parseFloat(latestAccountHis?.Balance || 0);
+  const permittedLossPercentage = 4; // 4%
+  const permittedLoss = (currentBalance * permittedLossPercentage) / 100;
+  const equityLowerLimit = currentBalance - permittedLoss;
 
   useEffect(() => {
     const handleResize = () => {
@@ -178,19 +180,19 @@ const Dashboard = () => {
 
           {/* Key Metrics */}
           <div className="space-y-4">
-            {/* Today's Starting Watermark */}
+            {/* Today's Starting High Watermark - UPDATED */}
             <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-lg">
               <div className="px-4 py-3 bg-gradient-to-r from-green-600 to-green-800">
                 <h3 className="text-white font-medium text-sm">Today's Starting High Watermark</h3>
               </div>
               <div className="p-4 flex items-center justify-center">
                 <h2 className="text-xl font-bold text-gray-800">
-                  {formatCurrency(accountDetail?.startingEquity)}
+                  {formatCurrency(currentBalance)}
                 </h2>
               </div>
             </div>
 
-            {/* Today's Permitted Loss */}
+            {/* Today's Permitted Loss - UPDATED */}
             <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-lg">
               <div className="px-4 py-3 bg-gradient-to-r from-green-600 to-green-800">
                 <h3 className="text-white font-medium text-sm">Today's Permitted Loss</h3>
@@ -202,14 +204,14 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Today's Equity Lower Limit */}
+            {/* Today's Equity Lower Limit - UPDATED */}
             <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-lg">
               <div className="px-4 py-3 bg-gradient-to-r from-green-600 to-green-800">
                 <h3 className="text-white font-medium text-sm">Today's Equity Cannot Go Below</h3>
               </div>
               <div className="p-4 flex items-center justify-center">
                 <h2 className="text-xl font-bold text-gray-800">
-                  {formatCurrency((accountDetail?.startingEquity || 0) - permittedLoss)}
+                  {formatCurrency(equityLowerLimit)}
                 </h2>
               </div>
             </div>
